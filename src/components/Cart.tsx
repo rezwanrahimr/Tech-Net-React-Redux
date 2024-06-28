@@ -21,22 +21,21 @@ import {
 import { IProduct } from '@/types/globalTypes';
 
 export default function Cart() {
-  const { products } = useAppSelector((state) => state.cart);
+  const { products, totalPrice } = useAppSelector((state) => state.cart);
   const dispatch = useAppDispatch();
-  const total = products?.length;
 
   return (
     <Sheet>
       <SheetTrigger>
         <Button variant="ghost">
           <HiOutlineShoppingCart size="25" />
-          <span>{total || 0}</span>
+          <span>{products?.length || 0}</span>
         </Button>
       </SheetTrigger>
       <SheetContent className="overflow-auto relative">
         <SheetHeader>
           <SheetTitle>Cart</SheetTitle>
-          <h1>Total: {total.toFixed(2)}</h1>
+          <h1>Total: {totalPrice.toFixed(2)}</h1>
         </SheetHeader>
         <div className="space-y-5">
           {products.map((product: IProduct) => (

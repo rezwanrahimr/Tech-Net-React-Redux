@@ -4,10 +4,12 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 
 interface ICart {
   products: IProduct[];
+  totalPrice: number;
 }
 
 const initialState: ICart = {
   products: [],
+  totalPrice: 0,
 };
 
 const cartSlice = createSlice({
@@ -26,8 +28,10 @@ const cartSlice = createSlice({
           );
           const updatedQuantity = Number(isAvilable.quantity) + 1;
           state.products[productIndex].quantity = updatedQuantity;
+          state.totalPrice += action.payload.price;
         } else {
           state.products.push({ ...action.payload, quantity: 1 });
+          state.totalPrice += action.payload.price;
         }
       } else {
         throw new Error('Product is Invalid.');
@@ -45,6 +49,7 @@ const cartSlice = createSlice({
           );
           const updatedQuantity = Number(isAvilable.quantity) - 1;
           state.products[productIndex].quantity = updatedQuantity;
+          state.totalPrice -= action.payload.price;
         }
       } else {
         throw new Error('Product is Invalid.');
@@ -59,6 +64,9 @@ const cartSlice = createSlice({
           (product) => product._id !== isAvilable._id
         );
         state.products = removeProduct;
+        const calculatePrice =
+          Number(isAvilable.quantity) * Number(isAvilable.price);
+        state.totalPrice -= calculatePrice;
       } else {
         throw new Error('This Product is Not Avilable.');
       }
