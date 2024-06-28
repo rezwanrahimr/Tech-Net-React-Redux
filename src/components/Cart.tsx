@@ -12,12 +12,17 @@ import {
   HiOutlineTrash,
 } from 'react-icons/hi';
 import { Button } from './ui/button';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import {
+  addToCart,
+  deleteToCart,
+  removeToCart,
+} from '@/redux/features/cart/cartSlice';
 import { IProduct } from '@/types/globalTypes';
-import { useAppSelector } from '@/redux/hooks';
 
 export default function Cart() {
-
-  const { products } = useAppSelector((state) => state.cart)
+  const { products } = useAppSelector((state) => state.cart);
+  const dispatch = useAppDispatch();
   const total = products?.length;
 
   return (
@@ -25,6 +30,7 @@ export default function Cart() {
       <SheetTrigger>
         <Button variant="ghost">
           <HiOutlineShoppingCart size="25" />
+          <span>{total || 0}</span>
         </Button>
       </SheetTrigger>
       <SheetContent className="overflow-auto relative">
@@ -33,7 +39,7 @@ export default function Cart() {
           <h1>Total: {total.toFixed(2)}</h1>
         </SheetHeader>
         <div className="space-y-5">
-          {products.map((product) => (
+          {products.map((product: IProduct) => (
             <div
               className="border h-44 p-5 flex justify-between rounded-md"
               key={product.name}
@@ -50,15 +56,16 @@ export default function Cart() {
                 </p>
               </div>
               <div className="border-l pl-5 flex flex-col justify-between">
-                <Button>
+                <Button onClick={() => dispatch(addToCart(product))}>
                   <HiOutlinePlus size="20" />
                 </Button>
-                <Button>
+                <Button onClick={() => dispatch(removeToCart(product))}>
                   <HiMinus size="20" />
                 </Button>
                 <Button
                   variant="destructive"
                   className="bg-red-500 hover:bg-red-400"
+                  onClick={() => dispatch(deleteToCart(product))}
                 >
                   <HiOutlineTrash size="20" />
                 </Button>
